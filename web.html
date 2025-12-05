@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Counter</title>
+    <link rel="stylesheet" href="style.css"> <!-- using local sytle -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- using external style -->
+</head>
+
+<body>
+    <!-- define what is in the task bar -->
+    <nav class="navbar">
+        <div class="user-section">
+            <div class="avatar-circle"></div>
+            <span class="username" id="display-name">Guest</span>
+        </div>
+        <div>
+            <button id="nav-login-btn" class="nav-btn" onclick="showLoginView()">Login</button> <!-- "go" to login page -->
+            <button id="nav-logout-btn" class="nav-btn logout" onclick="performLogout()" style="display:none;">Logout</button> <!-- log out function --> 
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- define what on the login page -->
+        <div id="view-login" class="view-section">
+            <h1 class="title">MEMBER LOGIN</h1>
+            <div class="card-sage">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="login-user" class="input-pill" placeholder="username (zmer)">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="login-pass" class="input-pill" placeholder="password (1111)">
+                </div>
+                <button class="action-btn" onclick="performLogin()">Sign In</button>
+                <button class="action-btn secondary" onclick="showInputView()">Cancel</button> <!-- backk to the "first" page-->
+                <p id="login-error" style="color: #a04028; text-align: center; display: none; font-weight: bold;">Invalid Credentials</p> <!-- if login incor-->
+            </div>
+        </div>
+
+        <div id="view-input" class="view-section active">
+            <!--main interface-->
+            <h1 class="title">BMI COUNT</h1>
+            <div class="gender-toggle">
+                <button class="gender-btn active" id="btn-female"><i class="fa-solid fa-venus"></i></button>
+                <button class="gender-btn inactive" id="btn-male"><i class="fa-solid fa-mars"></i></button>
+            </div>
+            <div class="card-sage" style="border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                <div class="input-group">
+                    <label>Umur (tahun)</label>
+                    <input type="number" id="inp-age" class="input-pill" placeholder="25">
+                </div>
+                <div class="input-group">
+                    <label>Berat badan (kg)</label>
+                    <input type="number" id="inp-weight" class="input-pill" placeholder="85">
+                </div>
+                <div class="input-group">
+                    <label>Tinggi (cm)</label>
+                    <input type="number" id="inp-height" class="input-pill" placeholder="160">
+                </div>
+                <button class="action-btn" id="btn-calc" onclick="calculateStats()" disabled>Loading C++...</button> <!-- if the C++ code doesn't load yet, the webpage will wait-->
+                <p id="mode-indicator" style="font-size: 11px; text-align: center; color: #555; margin-top: 5px;"></p>
+            </div>
+        </div>
+
+        <div id="view-result" class="result-layout">
+            <!-- define reslt screen -->
+            <div class="result-header">
+                <div class="diagnosis-text">
+                    <div class="diagnosis-title">BMI: <span id="res-title">...</span></div>
+                    <p style="margin: 10px 0;">
+                        <strong>Nilai BMI:</strong> <span id="res-bmi">0.0</span> <br>
+                        <strong>Kategori:</strong> <span id="res-category">...</span> <br>
+                        <strong>Lemak Tubuh:</strong> <span id="res-fat">0.0%</span>
+                    </p>
+                    <p id="res-desc" style="color: #333; line-height: 1.5;">Analisis kesehatan sedang diproses...</p>
+                </div>
+                <div class="risk-box" id="risk-display" style="display:none;">
+                    <div class="risk-title" style="font-weight: 800; margin-bottom: 5px;">RISIKO:</div>
+                    <ul class="risk-list"><li>Penyakit jantung</li><li>Diabetes tipe 2</li><li>Tekanan darah tinggi</li><li>Masalah sendi</li></ul>
+                </div>
+            </div>
+            <div class="rec-grid">
+                <div class="rec-card">
+                    <div style="height: 20px;"></div>
+                    <div class="card-header">REKOMENDASI</div>
+                    <div class="card-icon"><i class="fa-solid fa-apple-whole"></i></div>
+                    <div class="card-text" id="rec-text-1">Loading...</div>
+                </div>
+                <div class="rec-card">
+                    <div style="height: 20px;"></div>
+                    <div class="card-header">TARGET</div>
+                    <div class="card-icon"><i class="fa-solid fa-bullseye"></i></div>
+                    <div class="card-text"><strong>Berat Ideal: <span id="res-ideal"></span> kg</strong><p>Langkah kecil memberikan dampak besar.</p></div>
+                </div>
+            </div>
+
+            <div id="tracker-section" style="display:none; margin-top: 20px; background: #fff; padding: 20px; border-radius: 10px; border: 2px dashed #ccc;">
+    <h3 style="color: #3b4b34; margin-top: 0;"><i class="fa-solid fa-utensils"></i> Calorie & Weight Tracker</h3>
+    
+    <div style="margin-bottom: 15px;">
+        <!-- define tracker border -->
+        <label style="font-size: 12px; font-weight: bold;">Aktivitas Harian:</label>
+        <select id="act-level" class="input-pill" onchange="updateTracker()">
+            <option value="1">Sedentary (Jarang Olahraga)</option>
+            <option value="2">Light (1-3 hari/minggu)</option>
+            <option value="3">Moderate (3-5 hari/minggu)</option>
+            <option value="4">Very Active (Setiap hari)</option>
+        </select>
+    </div>
+
+    <div style="background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+        <!-- define user input -->
+        <label style="font-size: 12px;">Input Makanan (kkal):</label>
+        <div style="display: flex; gap: 5px;">
+            <input type="number" id="meal-input" class="input-pill" placeholder="500">
+            <button class="action-btn" style="width: auto;" onclick="addMeal()">+ Add</button>
+        </div>
+        <ul id="meal-list" style="font-size: 12px; color: #555; padding-left: 20px; margin-top: 5px;"></ul>
+    </div>
+
+    <div style="border-top: 1px solid #ddd; padding-top: 10px;">
+        <!-- define user intake -->
+        <div style="display: flex; justify-content: space-between;">
+            <span>Total Masuk:</span>
+            <strong><span id="track-intake">0</span> kcal</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <span>Kebutuhan (TDEE):</span>
+            <strong><span id="track-tdee">0</span> kcal</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 5px; color: #a04028;">
+            <span>Selisih (Net):</span>
+            <strong><span id="track-net">0</span> kcal</strong>
+        </div>
+        
+        <div id="track-prediction" style="background: #3b4b34; color: white; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 13px; text-align: center;">
+            Belum ada data...
+        </div>
+    </div>
+
+        <div>   
+            <button class="action-btn secondary" style="margin-top: 30px;" onclick="showInputView()">Hitung Ulang</button>
+        </div>
+    </main>
+
+    <script>
+        // calling all cpp module 
+        var Module = {
+            onRuntimeInitialized: function(){
+                console.log("C++ Engine Ready");
+                
+                window.cpp_calcBMI = Module.cwrap(
+                    'calculateBMI',// function name  
+                    'number', // expected return
+                    ['number', 'number'] // expected param
+                    );
+                window.cpp_calcFat = Module.cwrap('calculateBodyFat', 'number', ['number', 'number', 'number']);
+                window.cpp_calcBMR = Module.cwrap('calculateBMR', 'number', ['number', 'number', 'number', 'number']);
+                window.cpp_getIdealMin = Module.cwrap('getIdealMin', 'number', ['number']);
+                window.cpp_getIdealMax = Module.cwrap('getIdealMax', 'number', ['number']);
+                window.cpp_hasRisks = Module.cwrap('hasHealthRisks', 'number', ['number']);
+                window.cpp_calcTDEE = Module.cwrap('calculateTDEE', 'number', ['number', 'number']);
+                window.cpp_predictWeight = Module.cwrap('predictWeightChange', 'number', ['number', 'number']);
+
+                window.cpp_getClass = Module.cwrap('getClassification', 'string', ['number']);
+                window.cpp_getTitle = Module.cwrap('getDisplayTitle', 'string', ['number']);
+                window.cpp_getColor = Module.cwrap('getTitleColor', 'string', ['number']);
+                window.cpp_getRec = Module.cwrap('getRecommendation', 'string', ['number']);
+
+                enableButton("Hitung BMI");
+            }
+        };
+
+        function enableButton(text) {
+            const btn = document.getElementById('btn-calc');
+            btn.innerText = text;
+            btn.disabled = false;
+        }
+    </script>
+    <!-- loading js from cpp converter -->
+    <script src="bmi_logic.js"></script>
+
+    <script>
+        let isMale = false; 
+        let calorieHistory = [1800, 2050, 1900];
+        let isLoggedIn = false;
+
+        function hideAllViews(){
+            // hide all item to "change page"
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-result').style.display = 'none';
+        }
+
+        // define 3 "page"
+        function showInputView(){hideAllViews(); document.getElementById('view-input').classList.add('active');}
+        function showLoginView(){hideAllViews(); document.getElementById('view-login').classList.add('active');}
+        function showResultView(){hideAllViews(); document.getElementById('view-result').style.display = 'block';}
+
+        //login logic
+        function performLogin(){
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+            if (u === 'zmer' && p === '1111') {
+                isLoggedIn = true;
+                document.getElementById('display-name').innerText = "Hi, " + u;
+                document.getElementById('nav-login-btn').style.display = 'none';
+                document.getElementById('nav-logout-btn').style.display = 'inline-block';
+                document.getElementById('login-error').style.display = 'none';
+                showInputView();
+            } 
+            else { document.getElementById('login-error').style.display = 'block'; }
+        }
+
+        //logout logic
+        function performLogout(){
+            isLoggedIn = false;
+            document.getElementById('display-name').innerText = "Guest";
+            document.getElementById('nav-login-btn').style.display = 'inline-block';
+            document.getElementById('nav-logout-btn').style.display = 'none';
+            showInputView();
+        }
+        
+        //define male and female
+        document.getElementById('btn-female').addEventListener('click', () => { isMale = false; updateGenderBtns(); });
+        document.getElementById('btn-male').addEventListener('click', () => { isMale = true; updateGenderBtns(); });
+
+        function updateGenderBtns() {
+            document.getElementById('btn-female').className = isMale ? 'gender-btn inactive' : 'gender-btn active';
+            document.getElementById('btn-male').className = isMale ? 'gender-btn active' : 'gender-btn inactive';
+        }
+
+        //calculate data using cpp module/function
+        function calculateStats(){
+            const age = parseInt(document.getElementById('inp-age').value);
+            const w = parseFloat(document.getElementById('inp-weight').value);
+            const h = parseFloat(document.getElementById('inp-height').value);
+            const genderVal = isMale ? 1 : 0;
+
+            if(!age || !w || !h) { alert("Mohon lengkapi data"); return; }
+
+            const bmi = window.cpp_calcBMI(w, h);
+            const fat = window.cpp_calcFat(bmi, age, genderVal);
+            const idealMin = window.cpp_getIdealMin(h);
+            const idealMax = window.cpp_getIdealMax(h);
+            const showRisk = window.cpp_hasRisks(bmi); 
+
+            const catClass = window.cpp_getClass(bmi);
+            const titleText = window.cpp_getTitle(bmi);
+            const titleColor = window.cpp_getColor(bmi);
+            const recText = window.cpp_getRec(bmi);
+
+            document.getElementById('res-bmi').innerText = bmi.toFixed(2);
+            document.getElementById('res-category').innerText = catClass;
+            document.getElementById('res-fat').innerText = fat.toFixed(2) + "%";
+            document.getElementById('res-ideal').innerText = `${idealMin.toFixed(0)}-${idealMax.toFixed(0)}`;
+            
+            const titleEl = document.getElementById('res-title');
+            titleEl.innerText = titleText;
+            titleEl.style.color = titleColor;
+
+            document.getElementById('rec-text-1').innerText = recText;
+
+            document.getElementById('risk-display').style.display = (showRisk === 1) ? 'block' : 'none';
+
+            if(isLoggedIn) {
+                const bmr = window.cpp_calcBMR(w, h, age, genderVal);
+                updateTrackerBase(bmr); 
+            }
+            
+            showResultView();
+        }
+
+        //define user calorie intake
+        let currentTotalCalories = 0;
+        let currentBMR = 0; 
+
+        function updateTrackerBase(bmr){
+            currentBMR = bmr;
+            currentTotalCalories = 0; 
+            document.getElementById('meal-list').innerHTML = ""; 
+            document.getElementById('meal-input').value = "";
+            
+            if(isLoggedIn) {
+                document.getElementById('tracker-section').style.display = 'block';
+                updateTracker(); 
+            } else {
+                document.getElementById('tracker-section').style.display = 'none';
+            }
+        }
+
+        // taking user input
+        function addMeal(){
+            const val = parseFloat(document.getElementById('meal-input').value);
+            if(!val || val <= 0) return;
+
+            currentTotalCalories += val;
+
+            const li = document.createElement("li");
+            li.innerText = `Meal: ${val} kcal`;
+            document.getElementById('meal-list').appendChild(li);
+
+            document.getElementById('meal-input').value = "";
+
+            updateTracker();
+        }
+
+        //updating calorie value
+        function updateTracker(){
+            if(currentBMR === 0) return;
+
+            const activityLvl = parseInt(document.getElementById('act-level').value);
+
+            const tdee = window.cpp_calcTDEE(currentBMR, activityLvl);
+            
+            const weightChange = window.cpp_predictWeight(currentTotalCalories, tdee);
+            const net = currentTotalCalories - tdee;
+
+            document.getElementById('track-intake').innerText = currentTotalCalories;
+            document.getElementById('track-tdee').innerText = tdee.toFixed(0);
+            document.getElementById('track-net').innerText = net.toFixed(0);
+
+            const predBox = document.getElementById('track-prediction');
+            
+            if(net > 50) {
+                predBox.style.backgroundColor = "#d68c1c"; 
+                predBox.innerHTML = `Surplus! Anda akan <strong>NAIK ${weightChange.toFixed(2)} kg</strong> jika makan seperti ini setiap hari.`;
+            } else if (net < -50) {
+                predBox.style.backgroundColor = "#28a745"; 
+                predBox.innerHTML = `Defisit! Anda akan <strong>TURUN ${Math.abs(weightChange).toFixed(2)} kg</strong> jika makan seperti ini setiap hari.`;
+            } else {
+                predBox.style.backgroundColor = "#3b4b34"; 
+                predBox.innerHTML = `Seimbang. Berat badan anda akan stabil.`;
+            }
+        }
+    </script>
+</body>
+</html>
