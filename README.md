@@ -1,24 +1,18 @@
-# Example headings
+# Ideal Body
 
-## Sample Section
+## Tentang Platform
+  Kesehatan tubuh yang ideal merupakan salah satu indikator penting dalam mewujudkan kesejahteraan hidup sesuai dengan tujuan SDG 3 – Good Health and Well-being. platform ini merupakan web yang dapat membantu pengguna menghitung berat badan ideal, body mass index (BMI), basal metabolic rate (BMR), serta memberikan rekomendasi sederhana untuk mencapai berat badan yang sehat.
 
-## This'll be a _Helpful_ Section About the Greek Letter Θ!
-A heading containing characters not allowed in fragments, UTF-8 characters, two consecutive spaces between the first and second words, and formatting.
+## Fitur Ideal Body
+- Mengitung berat badan ideal user
+- Menghitung body mass index dan basal metabolic rate
+- Memberikan rekomendasi untuk berat badan ideal
+- Calorie tracker untuk memperkirakan berat badan  
 
-## This heading is not unique in the file
+## How to use
+1. Masukkan gender, umur, berat serta tinggi badan
+2. kalkulasi nilai BMI dengan menekan tombol "Hitung BMI"
+  Apabila ingin menggunakan fitur "Calorie Tracker", pengguna dapat melakukan Login terlebih dahulu sehingga fitur dapat diakses.
 
-TEXT 1
+# something--something idk
 
-## This heading is not unique in the file
-
-TEXT 2
-
-# Links to the example headings above
-
-Link to the sample section: [Link Text](#sample-section).
-
-Link to the helpful section: [Link Text](#thisll-be-a-helpful-section-about-the-greek-letter-Θ).
-
-Link to the first non-unique section: [Link Text](#this-heading-is-not-unique-in-the-file).
-
-Link to the second non-unique section: [Link Text](#this-heading-is-not-unique-in-the-file-1).
