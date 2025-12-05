@@ -1,0 +1,9 @@
+Explanation of each file:
+1. BMI.cpp = prototype using cpp as basis
+2. tracker.txt = file that contain data for BMI.cpp
+3. bmi_logic.cpp = contain all the calculation logic 
+4. bmi_logic.js = converted logic from .cpp file using cwrap and ccall
+5. bmi_logic.wasm = converted WebAssembly from .cpp 
+6. style.css = contain all the asset
+7. web.html = main web page
+
