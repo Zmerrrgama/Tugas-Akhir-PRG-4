@@ -14,5 +14,3 @@
 2. kalkulasi nilai BMI dengan menekan tombol "Hitung BMI"
   Apabila ingin menggunakan fitur "Calorie Tracker", pengguna dapat melakukan Login terlebih dahulu sehingga fitur dapat diakses.
 
-# something--something idk
-
